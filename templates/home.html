@@ -1,387 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boston Analytics Dashboard</title>
-    <link href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <title>Boston House Price Predictor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4f46e5;
-            --accent: #06b6d4;
-            --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --text-light: #e2e8f0;
-            --text-dim: #94a3b8;
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            background: var(--dark-bg);
             color: var(--text-light);
             min-height: 100vh;
             padding: 20px;
-            display: flex;
-            justify-content: center;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(28, 58, 173, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 20%);
         }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 20px;
-            width: 100%;
-            max-width: 1400px;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-
-        .panel {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            height: fit-content;
-            position: sticky;
-            top: 20px;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            background: linear-gradient(to right, #818cf8, #22d3ee);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-        }
-
-        .price-card {
+        
+        /* Header Styles */
+        header {
             text-align: center;
-            padding: 30px 20px;
-            background: linear-gradient(145deg, rgba(79, 70, 229, 0.1), rgba(6, 182, 212, 0.1));
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
+            margin-bottom: 40px;
+            padding-top: 20px;
         }
-
-        .price-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 10px 0;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
         }
-
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+        
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: var(--shadow);
         }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5);
+        
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
         }
-
+        
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* Main Content */
         .main-content {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .form-section, .result-section {
+            flex: 1;
+            min-width: 300px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-section h2, .result-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            color: var(--text-light);
+            font-size: 1.8rem;
+        }
+        
+        .form-section h2 i {
+            color: var(--primary);
+        }
+        
+        .result-section h2 i {
+            color: var(--secondary);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
             gap: 20px;
         }
-
-        .chart-container { height: 300px; width: 100%; display: flex; justify-content: center; }
-
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+        
+        .form-row .form-group {
+            flex: 1;
+            min-width: calc(50% - 20px);
         }
-
-        .control-group {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
         }
-
-        .label-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .control-group label { font-size: 0.85rem; color: var(--text-dim); font-weight: 600; }
-
-        input[type="range"] {
-            width: 100%; height: 6px; background: rgba(255,255,255,0.1);
-            border-radius: 5px; appearance: none; outline: none; cursor: pointer;
+        
+        .input-with-icon {
+            position: relative;
         }
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 16px; height: 16px; background: var(--accent);
-            border-radius: 50%; cursor: pointer;
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
         }
-
-        input[type="number"] {
-            background: transparent; border: none; color: var(--accent);
-            font-family: monospace; width: 60px; text-align: right;
+        
+        input, select {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: rgba(30, 41, 59, 0.7);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s;
         }
-        input[type="number"]:focus { outline: none; border-bottom: 1px solid var(--accent); }
-
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(28, 58, 173, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(28, 58, 173, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Result Styles */
+        .prediction-result {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            margin-top: 20px;
+            border: 2px solid var(--border-color);
+            transition: all 0.5s ease;
+        }
+        
+        .price-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 20px 0;
+            background: linear-gradient(to right, var(--secondary), #22d3ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
+            transition: all 0.5s ease;
+        }
+        
+        .price-label {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .result-placeholder {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            padding: 40px 0;
+        }
+        
+        /* Loading animation */
         .loader {
-            display: none; width: 20px; height: 20px; border: 3px solid #ffffff;
-            border-bottom-color: transparent; border-radius: 50%;
-            animation: rotation 1s linear infinite;
+            display: none;
+            width: 50px;
+            height: 50px;
+            margin: 20px auto;
+            border: 5px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
         }
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        @media (max-width: 900px) { .dashboard { grid-template-columns: 1fr; } }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .form-row .form-group {
+                min-width: 100%;
+            }
+            
+            .price-display {
+                font-size: 2.8rem;
+            }
+        }
     </style>
 </head>
-
 <body>
-
-    <div class="dashboard">
-        <div class="sidebar panel">
-            <div>
-                <h1>🏠 Boston Analytics</h1>
-                <p style="color: var(--text-dim); font-size: 0.9rem;">Real-time Property Valuation Model</p>
-            </div>
-
-            <div class="price-card">
-                <div style="color: var(--text-dim); font-size: 0.9rem; text-transform: uppercase;">Predicted Valuation</div>
-                <div class="price-value" id="resultDisplay">$ --</div>
-                <div id="statusText" style="font-size: 0.8rem; color: #aaa;">Ready to predict</div>
-            </div>
-
-            <button id="predictBtn" class="submit-btn" onclick="predictPrice()">
-                <span id="btnText">Update Prediction</span>
-                <span id="btnLoader" class="loader"></span>
-            </button>
-        </div>
-
-        <div class="main-content">
-            <div class="panel">
-                <div class="chart-container">
-                    <canvas id="featureChart"></canvas>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div>
+                    <h1>Boston House Price Predictor</h1>
+                    <p class="subtitle">Enter property details below to get an accurate price prediction using our advanced machine learning model</p>
                 </div>
             </div>
-
-            <div class="panel">
-                <h3 style="margin-bottom: 20px;">Feature Control</h3>
+        </header>
+        
+        <div class="main-content">
+            <section class="form-section">
+                <h2><i class="fas fa-edit"></i> Property Details</h2>
                 <form id="predictionForm" onsubmit="event.preventDefault(); predictPrice();">
-                    <div class="controls-grid">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="CRIM"><i class="fas fa-city"></i> CRIM (Crime Rate)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-chart-line"></i>
+                                <input type="number" step="any" name="CRIM" id="CRIM" value="0.006" required>
+                            </div>
+                        </div>
                         
-                        <div class="control-group">
-                            <div class="label-row"><label>CRIM (Crime Rate)</label>
-                                <input type="number" name="crim" id="crim_in" value="0.006" step="0.001" oninput="sync('crim', this.value)">
+                        <div class="form-group">
+                            <label for="ZN"><i class="fas fa-expand-arrows-alt"></i> ZN (Land Zone)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map"></i>
+                                <input type="number" step="any" name="ZN" id="ZN" value="18" required>
                             </div>
-                            <input type="range" id="crim" min="0" max="100" step="0.01" value="0.006" oninput="sync('crim_in', this.value)">
                         </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>ZN (Residential Zones)</label>
-                                <input type="number" name="zn" id="zn_in" value="18" oninput="sync('zn', this.value)">
-                            </div>
-                            <input type="range" id="zn" min="0" max="100" value="18" oninput="sync('zn_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>INDUS (Industrial)</label>
-                                <input type="number" name="indus" id="indus_in" value="2.31" oninput="sync('indus', this.value)">
-                            </div>
-                            <input type="range" id="indus" min="0" max="30" step="0.01" value="2.31" oninput="sync('indus_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                             <div class="label-row"><label>CHAS (River Proximity)</label></div>
-                            <select name="chas" id="chas" style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: none; color: white; border-radius: 5px;">
-                                <option value="0" style="color: black;">No (0)</option>
-                                <option value="1" style="color: black;">Yes (1)</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>NOX (Pollution)</label>
-                                <input type="number" name="nox" id="nox_in" value="0.538" step="0.001" oninput="sync('nox', this.value)">
-                            </div>
-                            <input type="range" id="nox" min="0.3" max="0.9" step="0.001" value="0.538" oninput="sync('nox_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>RM (Rooms)</label>
-                                <input type="number" name="rm" id="rm_in" value="6.575" step="0.01" oninput="sync('rm', this.value)">
-                            </div>
-                            <input type="range" id="rm" min="3" max="9" step="0.01" value="6.575" oninput="sync('rm_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>AGE (Property Age)</label>
-                                <input type="number" name="age" id="age_in" value="65.2" oninput="sync('age', this.value)">
-                            </div>
-                            <input type="range" id="age" min="0" max="100" value="65.2" oninput="sync('age_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>DIS (Distance)</label>
-                                <input type="number" name="dis" id="dis_in" value="4.09" step="0.01" oninput="sync('dis', this.value)">
-                            </div>
-                            <input type="range" id="dis" min="1" max="12" step="0.01" value="4.09" oninput="sync('dis_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>RAD (Highway Access)</label>
-                                <input type="number" name="rad" id="rad_in" value="1" oninput="sync('rad', this.value)">
-                            </div>
-                            <input type="range" id="rad" min="1" max="24" value="1" oninput="sync('rad_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>TAX (Tax Rate)</label>
-                                <input type="number" name="tax" id="tax_in" value="296" oninput="sync('tax', this.value)">
-                            </div>
-                            <input type="range" id="tax" min="180" max="711" value="296" oninput="sync('tax_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>PTRATIO (Pupil-Teacher)</label>
-                                <input type="number" name="ptratio" id="ptratio_in" value="15.3" step="0.1" oninput="sync('ptratio', this.value)">
-                            </div>
-                            <input type="range" id="ptratio" min="12" max="22" step="0.1" value="15.3" oninput="sync('ptratio_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>B (Demographics)</label>
-                                <input type="number" name="b" id="b_in" value="396.9" step="0.1" oninput="sync('b', this.value)">
-                            </div>
-                            <input type="range" id="b" min="0" max="400" step="0.1" value="396.9" oninput="sync('b_in', this.value)">
-                        </div>
-
-                        <div class="control-group">
-                            <div class="label-row"><label>LSTAT (Lower Status %)</label>
-                                <input type="number" name="lstat" id="lstat_in" value="4.98" step="0.01" oninput="sync('lstat', this.value)">
-                            </div>
-                            <input type="range" id="lstat" min="1" max="40" step="0.01" value="4.98" oninput="sync('lstat_in', this.value)">
-                        </div>
-
                     </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="INDUS"><i class="fas fa-industry"></i> INDUS (Business Acres)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-building"></i>
+                                <input type="number" step="any" name="INDUS" id="INDUS" value="2.31" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="CHAS"><i class="fas fa-water"></i> CHAS (Charles River)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-river"></i>
+                                <select name="CHAS" id="CHAS" required>
+                                    <option value="0">No (Not adjacent to river)</option>
+                                    <option value="1">Yes (Adjacent to river)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="NOX"><i class="fas fa-smog"></i> NOX (Nitric Oxides)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-wind"></i>
+                                <input type="number" step="any" name="NOX" id="NOX" value="0.538" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="RM"><i class="fas fa-door-open"></i> RM (Rooms per dwelling)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-home"></i>
+                                <input type="number" step="any" name="RM" id="RM" value="6.575" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="AGE"><i class="fas fa-calendar-alt"></i> AGE (Building Age)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-history"></i>
+                                <input type="number" step="any" name="AGE" id="AGE" value="65.2" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="DIS"><i class="fas fa-road"></i> DIS (Distance to employment)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-location-arrow"></i>
+                                <input type="number" step="any" name="DIS" id="DIS" value="4.09" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="RAD"><i class="fas fa-map-marker-alt"></i> RAD (Highway Accessibility)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-route"></i>
+                                <input type="number" name="RAD" id="RAD" value="1" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="TAX"><i class="fas fa-file-invoice-dollar"></i> TAX (Property Tax)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <input type="number" name="TAX" id="TAX" value="296" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="PTRATIO"><i class="fas fa-graduation-cap"></i> PTRATIO (Pupil-Teacher Ratio)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-users"></i>
+                                <input type="number" step="any" name="PTRATIO" id="PTRATIO" value="15.3" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="B"><i class="fas fa-chart-bar"></i> B (Demographic Factor)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-chart-area"></i>
+                                <input type="number" step="any" name="B" id="B" value="396.9" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="LSTAT"><i class="fas fa-percentage"></i> LSTAT (Lower Status Population)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-user-friends"></i>
+                                <input type="number" step="any" name="LSTAT" id="LSTAT" value="4.98" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-calculator"></i> Predict House Price
+                    </button>
                 </form>
-            </div>
+            </section>
+            
+            <section class="result-section">
+                <h2><i class="fas fa-chart-line"></i> Prediction Result</h2>
+                <div class="prediction-result">
+                    <div class="price-label">Estimated Property Value</div>
+                    <div class="price-display" id="result">--</div>
+                    <div class="price-label">in thousands of dollars</div>
+                    
+                    <div class="loader" id="loader"></div>
+                    
+                    <p style="margin-top: 30px; color: var(--text-muted); font-size: 0.95rem;">
+                        <i class="fas fa-info-circle"></i> This prediction is based on the Boston Housing Dataset and our trained machine learning model.
+                    </p>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(30, 41, 59, 0.5); border-radius: 12px;">
+                    <h3 style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; font-size: 1.2rem;">
+                        <i class="fas fa-lightbulb"></i> How it works
+                    </h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">
+                        Our model analyzes 13 key property features to estimate house prices in the Boston area. 
+                        Fill in the form with accurate property details and click "Predict House Price" to get an instant valuation.
+                    </p>
+                </div>
+            </section>
         </div>
+        
+        <footer>
+            <p>Boston House Price Predictor &copy; 2026 | Machine Learning Project</p>
+            <p style="margin-top: 10px;">This tool provides estimates based on historical data and should be used for informational purposes only.</p>
+        </footer>
     </div>
 
     <script>
-        // 1. Chart Init
-        const ctx = document.getElementById('featureChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: ['CRIM', 'ZN', 'INDUS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'LSTAT'],
-                datasets: [{
-                    label: 'Feature Profile',
-                    data: [1, 18, 2.3, 0.5, 6.5, 65, 4, 1, 29, 15, 5], 
-                    backgroundColor: 'rgba(6, 182, 212, 0.2)',
-                    borderColor: '#06b6d4',
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#fff',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                        pointLabels: { color: '#94a3b8' },
-                        ticks: { display: false }
-                    }
-                },
-                plugins: { legend: { display: false } }
-            }
-        });
-
-        // 2. Sync Sliders and Inputs
-        function sync(id, value) {
-            document.getElementById(id).value = value;
-            updateChart();
-        }
-
-        // 3. Update Chart Visuals
-        function updateChart() {
-            const data = [
-                document.getElementById('crim_in').value * 10,
-                document.getElementById('zn_in').value,
-                document.getElementById('indus_in').value,
-                document.getElementById('nox_in').value * 100,
-                document.getElementById('rm_in').value * 10,
-                document.getElementById('age_in').value,
-                document.getElementById('dis_in').value * 5,
-                document.getElementById('rad_in').value * 3,
-                document.getElementById('tax_in').value / 10,
-                document.getElementById('ptratio_in').value * 3,
-                document.getElementById('lstat_in').value * 3
-            ];
-            chart.data.datasets[0].data = data;
-            chart.update();
-        }
-
-        // 4. PREDICT FUNCTION (Connects to Python)
         async function predictPrice() {
-            const btn = document.getElementById('predictBtn');
-            const loader = document.getElementById('btnLoader');
-            const btnText = document.getElementById('btnText');
-            const resultDisplay = document.getElementById('resultDisplay');
+            const form = document.getElementById("predictionForm");
+            const formData = new FormData(form);
+            const resultElement = document.getElementById("result");
+            const loader = document.getElementById("loader");
             
-            btn.disabled = true;
-            loader.style.display = 'inline-block';
-            btnText.innerText = 'Calculating...';
-            
-            const formData = new FormData(document.getElementById('predictionForm'));
+            // Show loading animation
+            resultElement.textContent = "Calculating...";
+            loader.style.display = "block";
             
             try {
-                // Fetch sends data to Python
-                const response = await fetch("{{ url_for('predict') }}", {
-                    method: 'POST',
+                const response = await fetch("/predict", {
+                    method: "POST",
                     body: formData
                 });
-
-                if (response.ok) {
-                    // Receive JSON from Python
-                    const data = await response.json();
-                    
-                    // Display Price
-                    resultDisplay.innerText = "$ " + data.price + " k"; 
-                    
-                    document.getElementById('statusText').innerText = "Updated just now";
-                    document.getElementById('statusText').style.color = "#4ade80";
-                } else {
-                    resultDisplay.innerText = "Error";
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
+                
+                const data = await response.json();
+                
+                // Hide loader
+                loader.style.display = "none";
+                
+                // Format the price with commas
+                const formattedPrice = new Intl.NumberFormat('en-US').format(data.price);
+                resultElement.textContent = `$${formattedPrice}k`;
+                
+                // Add animation effect
+                resultElement.style.transform = "scale(1.1)";
+                setTimeout(() => {
+                    resultElement.style.transform = "scale(1)";
+                }, 300);
+                
             } catch (error) {
-                console.error('Error:', error);
-                resultDisplay.innerText = "Error";
-            } finally {
-                btn.disabled = false;
-                loader.style.display = 'none';
-                btnText.innerText = 'Update Prediction';
+                console.error("Prediction error:", error);
+                loader.style.display = "none";
+                resultElement.textContent = "Error";
+                
+                // Show error message
+                const errorMsg = document.createElement("div");
+                errorMsg.style.color = "#ef4444";
+                errorMsg.style.marginTop = "10px";
+                errorMsg.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Unable to get prediction. Please try again.`;
+                
+                // Remove any previous error message
+                const existingError = resultElement.parentNode.querySelector(".error-msg");
+                if (existingError) existingError.remove();
+                
+                errorMsg.className = "error-msg";
+                resultElement.parentNode.appendChild(errorMsg);
             }
         }
         
-        updateChart();
+        // Add some interactivity to form inputs
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.style.borderColor = "var(--primary)";
+            });
+            
+            element.addEventListener('blur', function() {
+                this.parentElement.style.borderColor = "var(--border-color)";
+            });
+        });
     </script>
 </body>
 </html>
