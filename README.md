@@ -15,17 +15,20 @@ An **end-to-end Machine Learning web application** that predicts housing prices 
 ---
 
 ## 📖 Table of Contents
-- [Project Overview](#-project-overview)
-- [Tech Stack](#-tech-stack)
-- [Dataset & Features](#-dataset--features)
-- [Architecture](#-architecture)
-- [Installation & Usage](#-installation--usage)
-- [Docker Support](#-docker-support)
-- [API Documentation](#-api-documentation)
-- [License](#-license)
+
+- [Project Overview](#project-overview)
+- [Tech Stack](#tech-stack)
+- [Dataset & Features](#dataset-features)
+- [Model Performance](#model-performance)
+- [Architecture](#architecture)
+- [Installation & Usage](#installation-usage)
+- [Docker Support](#docker-support)
+- [API Documentation](#api-documentation)
+- [License](#license)
 
 ---
 
+<a id="project-overview"></a>
 ## 🚀 Project Overview
 
 This project was developed to bridge the gap between data science experimentation and production engineering. It demonstrates a complete **MLOps pipeline**:
@@ -37,6 +40,7 @@ This project was developed to bridge the gap between data science experimentatio
 
 ---
 
+<a id="tech-stack"></a>
 ## 🛠 Tech Stack
 
 | Component | Technology |
@@ -51,6 +55,7 @@ This project was developed to bridge the gap between data science experimentatio
 
 ---
 
+<a id="architecture"></a>
 ## 🏗️ Architecture
 
 The application follows a modular, production-style **ML inference architecture**:
@@ -74,6 +79,22 @@ graph LR
 
 ---
 
+<a id="model-performance"></a>
+## 📈 Model Performance
+
+The **Random Forest Regressor** was selected as the final model after evaluating multiple baseline models, including **Linear Regression, Ridge, and Lasso**.  
+Hyperparameters were optimized using **GridSearchCV** (`n_estimators=300`, `max_depth=15`) to improve generalization performance.
+
+### Test Set Metrics
+
+| Metric | Score |
+| :--- | :--- |
+| **R² Score** | **0.88** |
+| **Root Mean Squared Error (RMSE)** | **2.91** |
+
+*The model explains approximately **88% of the variance** in housing prices and significantly outperforms the Linear Regression baseline (R² = 0.66).*
+
+<a id="dataset-features"></a>
 ## 📊 Dataset & Features
 
 The model is trained on the standard Boston Housing Dataset. It accepts **13 input features** to predict the Median Value of owner-occupied homes (MEDV).
@@ -96,6 +117,7 @@ The model is trained on the standard Boston Housing Dataset. It accepts **13 inp
 
 ---
 
+<a id="installation-usage"></a>
 ## 💻 Installation & Usage
 
 Follow these steps to run the project locally.
@@ -138,6 +160,7 @@ http://127.0.0.1:5000/
 
 ---
 
+<a id="docker-support"></a>
 ## 🐳 Docker Support
 
 This application is fully containerized and can be run without installing Python or project dependencies locally.  
@@ -185,6 +208,7 @@ This Docker setup is fully compatible with **Render**, ensuring:
 
 ---
 
+<a id="api-documentation"></a>
 ## 🔌 API Documentation
 
 The application exposes a REST endpoint for programmatic house price prediction.
@@ -258,6 +282,7 @@ curl -X POST https://boston-house-pricing-kj3s.onrender.com/predict \
 
 ---
 
+<a id="license"></a>
 ## 📜 License
 
 This project is licensed under the **Apache 2.0 License**.  
