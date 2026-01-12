@@ -104,8 +104,8 @@ Follow these steps to run the project locally.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Mayurpatil05/boston-house-pricing.git
-cd boston-house-pricing
+git clone https://github.com/Mayurpatil05/boston-house-price-predictor.git
+cd boston-house-price-predictor
 ```
 
 ### 2. Create a Virtual Environment (Recommended)
@@ -260,10 +260,12 @@ curl -X POST https://boston-house-pricing-kj3s.onrender.com/predict \
 
 ## 📜 License
 
-This project is licensed under the **Apache 2.0 License**. See the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
+This project is licensed under the **Apache 2.0 License**.  
+See the [LICENSE](LICENSE) file for details.
 
 ---
 
 ### 👤 Author
 
-**Mayur Patil**  [LinkedIn Profile](https://linkedin.com/in/mayurpatil1130) | [GitHub Profile](https://www.google.com/search?q=https://github.com/Mayurpatil05)
+**Mayur Patil**  
+[LinkedIn Profile](https://linkedin.com/in/mayurpatil1130) | [GitHub Profile](https://github.com/Mayurpatil05)
